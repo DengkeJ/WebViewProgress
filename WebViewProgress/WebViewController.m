@@ -7,6 +7,7 @@
 //
 
 #import "WebViewController.h"
+#import <WebKit/WebKit.h>
 
 @interface WebViewController ()<UIWebViewDelegate>
 
@@ -26,7 +27,7 @@
     _layer = [DKProgressLayer new];
 //    _layer.progressColor = [UIColor greenColor];
     _layer.progressStyle = _style;
-    _layer.frame = CGRectMake(0, 41, DEVICE_WIDTH, 2);
+    _layer.frame = CGRectMake(0, 40, DEVICE_WIDTH, 2);
     
     [self.navigationController.navigationBar.layer addSublayer:_layer];
 //    [self.webView.layer addSublayer:_layer];

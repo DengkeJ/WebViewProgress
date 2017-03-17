@@ -107,14 +107,13 @@
 		4256EA4F1E7A25650099F07E /* WebViewProgress */ = {
 			isa = PBXGroup;
 			children = (
+				4256EA891E7A89C90099F07E /* DKProgress */,
 				4256EA531E7A25650099F07E /* AppDelegate.h */,
 				4256EA541E7A25650099F07E /* AppDelegate.m */,
 				4256EA561E7A25650099F07E /* ViewController.h */,
 				4256EA571E7A25650099F07E /* ViewController.m */,
 				4256EA831E7A26F70099F07E /* WebViewController.h */,
 				4256EA841E7A26F70099F07E /* WebViewController.m */,
-				4256EA861E7A2A4C0099F07E /* DKProgressLayer.h */,
-				4256EA871E7A2A4C0099F07E /* DKProgressLayer.m */,
 				4256EA591E7A25650099F07E /* Main.storyboard */,
 				4256EA5C1E7A25650099F07E /* Assets.xcassets */,
 				4256EA5E1E7A25650099F07E /* LaunchScreen.storyboard */,
@@ -148,6 +147,15 @@
 				4256EA771E7A25650099F07E /* Info.plist */,
 			);
 			path = WebViewProgressUITests;
+			sourceTree = "<group>";
+		};
+		4256EA891E7A89C90099F07E /* DKProgress */ = {
+			isa = PBXGroup;
+			children = (
+				4256EA861E7A2A4C0099F07E /* DKProgressLayer.h */,
+				4256EA871E7A2A4C0099F07E /* DKProgressLayer.m */,
+			);
+			name = DKProgress;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -217,6 +225,7 @@
 				TargetAttributes = {
 					4256EA4C1E7A25650099F07E = {
 						CreatedOnToolsVersion = 8.1;
+						DevelopmentTeam = DDJS8QMNMF;
 						ProvisioningStyle = Automatic;
 					};
 					4256EA651E7A25650099F07E = {
@@ -434,7 +443,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = DDJS8QMNMF;
 				INFOPLIST_FILE = WebViewProgress/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = DK.WebViewProgress;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -445,7 +456,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = DDJS8QMNMF;
 				INFOPLIST_FILE = WebViewProgress/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = DK.WebViewProgress;
 				PRODUCT_NAME = "$(TARGET_NAME)";
