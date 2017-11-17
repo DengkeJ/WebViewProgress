@@ -12,6 +12,7 @@
 
 @property (nonatomic, strong) NSTimer *timer;
 @property (nonatomic, assign) CGFloat stepWidth;
+@property (nonatomic, assign) CGFloat lineHeight;
 @property (nonatomic, strong) CAGradientLayer *gradientLayer;
 
 @end
@@ -21,26 +22,36 @@ static NSTimeInterval const progressInterval = 0.01;
 @implementation DKProgressLayer
 
 - (instancetype)init {
+    return [self initWithHeight:2];
+}
+
+- (instancetype)initWithHeight:(CGFloat)height {
+    return [self initWithFrame:CGRectMake(0, 0, 0, height)];
+}
+
+- (instancetype)initWithFrame:(CGRect)frame {
     if (self = [super init]) {
         self.progressColor = [UIColor whiteColor];
-        self.stepWidth = 0.01;
-        [self initPath];
+        _stepWidth = 0.01;
+        _lineHeight = frame.size.height;
+        [self initPathWithHeight:_lineHeight];
+        self.frame = frame;
     }
     return self;
 }
 
-- (void)initPath {
-    self.lineWidth = 2;
+- (void)initPathWithHeight:(CGFloat)height {
+    self.lineWidth = height;
     UIBezierPath *path = [UIBezierPath bezierPath];
-    [path moveToPoint:CGPointMake(0, 2)];
-    [path addLineToPoint:CGPointMake(DEVICE_WIDTH, 2)];
+    [path moveToPoint:CGPointMake(0, height)];
+    [path addLineToPoint:CGPointMake(DK_DEVICE_WIDTH, height)];
     self.path = path.CGPath;
     self.strokeEnd = 0;
 }
 
 - (void)setProgressStyle:(DKProgressStyle)progressStyle {
     _progressStyle = progressStyle;
-    if (progressStyle == DKProgressStyle_Gradual) {
+    if (progressStyle & DKProgressStyle_Gradual) {
         self.strokeColor = nil;
         CAGradientLayer *gradientLayer = [CAGradientLayer layer];
         CGFloat RGB[3];
@@ -49,7 +60,7 @@ static NSTimeInterval const progressInterval = 0.01;
         gradientLayer.locations = @[@(0), @(0)];
         gradientLayer.startPoint = CGPointMake(0, 0);
         gradientLayer.endPoint = CGPointMake(1.0, 0);
-        gradientLayer.frame = CGRectMake(0, 0, 0, 2);
+        gradientLayer.frame = CGRectMake(0, 0, 0, _lineHeight);
         _gradientLayer = gradientLayer;
         [self addSublayer:gradientLayer];
     }
@@ -57,7 +68,7 @@ static NSTimeInterval const progressInterval = 0.01;
 
 - (void)setProgressColor:(UIColor *)progressColor {
     _progressColor = progressColor;
-    if (_progressStyle == DKProgressStyle_Noraml) {
+    if (_progressStyle & DKProgressStyle_Noraml) {
         self.strokeColor = progressColor.CGColor;
     } else {
         self.progressStyle = DKProgressStyle_Gradual;
@@ -66,12 +77,25 @@ static NSTimeInterval const progressInterval = 0.01;
 
 - (void)progressChanged:(NSTimer *)timer {
     self.strokeEnd += _stepWidth;
+    
     if (self.strokeEnd > 0.9) {
-        _stepWidth = 0.0001;
+        _stepWidth = 0.0;
+        return;
     }
-    if (_progressStyle == DKProgressStyle_Gradual) {
+    if (self.strokeEnd < 0.1) {
+        self.strokeEnd = 0.1;
+    }
+    
+    if (self.strokeEnd > 0.8) {
+        _stepWidth = 0.001;
+    }
+    
+    if (_progressStyle & DKProgressStyle_Gradual) {
         _gradientLayer.locations = @[@(self.strokeEnd/2), @(self.strokeEnd)];
-        _gradientLayer.frame = CGRectMake(0, 0, DEVICE_WIDTH*self.strokeEnd, 2);
+        _gradientLayer.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, DK_DEVICE_WIDTH * self.strokeEnd, _lineHeight);
+    } else {
+        self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, DK_DEVICE_WIDTH * self.strokeEnd, _lineHeight);
+        NSLog(@"%@", NSStringFromCGRect(self.frame));
     }
 }
 
@@ -80,20 +104,23 @@ static NSTimeInterval const progressInterval = 0.01;
     if (_timer) {
         [self invalidateTimer];
     }
-    _timer = [NSTimer scheduledTimerWithTimeInterval:progressInterval target:self selector:@selector(progressChanged:) userInfo:nil repeats:YES];
+    
+    _timer = [NSTimer timerWithTimeInterval:progressInterval target:self selector:@selector(progressChanged:) userInfo:nil repeats:YES];
+    [[NSRunLoop currentRunLoop] addTimer:_timer forMode:NSRunLoopCommonModes];
 }
 
 - (void)progressAnimationCompletion {
     [self invalidateTimer];
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(progressChanged:) object:nil];
     self.strokeEnd = 1.0;
     _gradientLayer.locations = @[@(self.strokeEnd/2), @(self.strokeEnd)];
-    _gradientLayer.frame = CGRectMake(0, 0, DEVICE_WIDTH*self.strokeEnd, 2);
+    _gradientLayer.frame = CGRectMake(0, 0, DK_DEVICE_WIDTH * self.strokeEnd, _lineHeight);
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.25 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         self.hidden = YES;
         _stepWidth = 0.01;
         self.strokeEnd = 0;
         _gradientLayer.locations = @[@(self.strokeEnd/2), @(self.strokeEnd)];
-        _gradientLayer.frame = CGRectMake(0, 0, 0, 2);
+        _gradientLayer.frame = CGRectMake(0, 0, 0, _lineHeight);
     });
 }
 
