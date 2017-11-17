@@ -24,17 +24,15 @@
     NSURL *url = [[NSURL alloc] initWithString:_urlString];
     [_webView loadRequest:[NSURLRequest requestWithURL:url]];
     
-    _layer = [DKProgressLayer new];
-//    _layer.progressColor = [UIColor greenColor];
+    _layer = [[DKProgressLayer alloc] initWithFrame:CGRectMake(0, 40, DK_DEVICE_WIDTH, 4)];
+    _layer.progressColor = [UIColor greenColor];
     _layer.progressStyle = _style;
-    _layer.frame = CGRectMake(0, 40, DEVICE_WIDTH, 2);
     
     [self.navigationController.navigationBar.layer addSublayer:_layer];
-//    [self.webView.layer addSublayer:_layer];
     [self showCustomBackButton];
 }
 
-/* 显示自定义返回按钮 */
+/** 显示自定义返回按钮 */
 - (void)showCustomBackButton {
     UIButton *customButton = [UIButton buttonWithType:UIButtonTypeCustom];
     customButton.frame = CGRectMake(0, 0, 35, 35);
@@ -44,7 +42,7 @@
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:customButton];
 }
 
-/* 显示自定义title */
+/** 显示自定义title */
 - (void)setCustomTitle:(NSString *)title {
     UILabel *titleView = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 200, 40)];
     titleView.font = [UIFont boldSystemFontOfSize:17.0];
@@ -60,6 +58,7 @@
     } else {
         [self.navigationController popViewControllerAnimated:YES];
     }
+    [_layer removeFromSuperlayer];
 }
 
 #pragma mark - WebViewDelegate
