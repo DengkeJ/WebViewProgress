@@ -50,7 +50,7 @@ static NSTimeInterval const progressInterval = 0.001;
 
 - (void)setProgressStyle:(DKProgressStyle)progressStyle {
     _progressStyle = progressStyle;
-    if (progressStyle == DKProgressStyle_Gradual) {
+    if (progressStyle & DKProgressStyle_Gradual) {
         self.strokeColor = nil;
         CAGradientLayer *gradientLayer = [CAGradientLayer layer];
         CGFloat RGB[3];
@@ -67,7 +67,7 @@ static NSTimeInterval const progressInterval = 0.001;
 
 - (void)setProgressColor:(UIColor *)progressColor {
     _progressColor = progressColor;
-    if (_progressStyle == DKProgressStyle_Noraml) {
+    if (_progressStyle & DKProgressStyle_Noraml) {
         self.strokeColor = progressColor.CGColor;
     } else {
         self.progressStyle = DKProgressStyle_Gradual;
@@ -99,7 +99,6 @@ static NSTimeInterval const progressInterval = 0.001;
     if (_timer) {
         [self invalidateTimer];
     }
-
     _timer = [NSTimer timerWithTimeInterval:progressInterval target:self selector:@selector(progressChanged:) userInfo:nil repeats:YES];
     [[NSRunLoop currentRunLoop] addTimer:_timer forMode:NSRunLoopCommonModes];
 }

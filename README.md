@@ -13,4 +13,6 @@
     layer.progressStyle = DKProgressStyle;
     layer.frame = CGRectMake(0, 40, DEVICE_WIDTH, 2);
     //根据需求，可以添加到NavigationController或者WebView
-    [self.navigationController.navigationBar.layer addSublayer:layer];
+    [self.navigationController.navigationBar.layer addSublayer:layer];
+    
+[简书地址] http://www.jianshu.com/u/1fc1bd217dc5
