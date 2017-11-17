@@ -24,11 +24,11 @@
     NSURL *url = [[NSURL alloc] initWithString:_urlString];
     [_webView loadRequest:[NSURLRequest requestWithURL:url]];
     
-    _layer = [DKProgressLayer new];
-//    _layer.progressColor = [UIColor greenColor];
+    _layer = [[DKProgressLayer alloc] initWithHeight:2];
+    _layer.progressColor = [UIColor greenColor];
     _layer.progressStyle = _style;
-    _layer.frame = CGRectMake(0, 40, DEVICE_WIDTH, 2);
-    
+//    _layer.frame = CGRectMake(0, 40, DK_DEVICE_WIDTH, 2);
+    NSLog(@"2342342423");
     [self.navigationController.navigationBar.layer addSublayer:_layer];
 //    [self.webView.layer addSublayer:_layer];
     [self showCustomBackButton];
