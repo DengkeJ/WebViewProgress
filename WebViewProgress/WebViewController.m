@@ -8,11 +8,11 @@
 
 #import "WebViewController.h"
 #import <WebKit/WebKit.h>
+#import "UIWebView+DKProgress.h"
 
 @interface WebViewController ()<UIWebViewDelegate>
 
 @property (weak, nonatomic) IBOutlet UIWebView *webView;
-@property (nonatomic, strong) DKProgressLayer *layer;
 
 @end
 
@@ -23,12 +23,11 @@
     
     NSURL *url = [[NSURL alloc] initWithString:_urlString];
     [_webView loadRequest:[NSURLRequest requestWithURL:url]];
+    self.webView.dk_progressLayer = [[DKProgressLayer alloc] initWithFrame:CGRectMake(0, 40, DK_DEVICE_WIDTH, 4)];
+    self.webView.dk_progressLayer.progressColor = [UIColor greenColor];
+    self.webView.dk_progressLayer.progressStyle = _style;
     
-    _layer = [[DKProgressLayer alloc] initWithFrame:CGRectMake(0, 40, DK_DEVICE_WIDTH, 4)];
-    _layer.progressColor = [UIColor greenColor];
-    _layer.progressStyle = _style;
-    
-    [self.navigationController.navigationBar.layer addSublayer:_layer];
+    [self.navigationController.navigationBar.layer addSublayer:self.webView.dk_progressLayer];
     [self showCustomBackButton];
 }
 
@@ -58,22 +57,24 @@
     } else {
         [self.navigationController popViewControllerAnimated:YES];
     }
-    [_layer removeFromSuperlayer];
 }
 
 #pragma mark - WebViewDelegate
 
 - (void)webViewDidStartLoad:(UIWebView *)webView {
-    [_layer progressAnimationStart];
+
 }
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
-    [_layer progressAnimationCompletion];
     [self setCustomTitle:[webView stringByEvaluatingJavaScriptFromString:@"document.title"]];
 }
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
-    [_layer progressAnimationCompletion];
+
+}
+
+- (void)dealloc {
+    NSLog(@"%@ - dealloc", NSStringFromClass([self class]));
 }
 
 - (void)didReceiveMemoryWarning {

@@ -67,7 +67,7 @@ static NSTimeInterval const progressInterval = 0.001;
 
 - (void)setProgressColor:(UIColor *)progressColor {
     _progressColor = progressColor;
-    if (_progressStyle & DKProgressStyle_Noraml) {
+    if (_progressStyle == DKProgressStyle_Noraml) {
         self.strokeColor = progressColor.CGColor;
     } else {
         self.progressStyle = DKProgressStyle_Gradual;

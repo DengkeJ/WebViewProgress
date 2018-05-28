@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3BC69A6220A2EC0A009555FE /* UIWebView+DKProgress.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BC69A6120A2EC0A009555FE /* UIWebView+DKProgress.m */; };
 		4256EA521E7A25650099F07E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 4256EA511E7A25650099F07E /* main.m */; };
 		4256EA551E7A25650099F07E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 4256EA541E7A25650099F07E /* AppDelegate.m */; };
 		4256EA581E7A25650099F07E /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4256EA571E7A25650099F07E /* ViewController.m */; };
@@ -37,6 +38,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		3BC69A6020A2EC0A009555FE /* UIWebView+DKProgress.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIWebView+DKProgress.h"; sourceTree = "<group>"; };
+		3BC69A6120A2EC0A009555FE /* UIWebView+DKProgress.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIWebView+DKProgress.m"; sourceTree = "<group>"; };
 		4256EA4D1E7A25650099F07E /* WebViewProgress.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WebViewProgress.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4256EA511E7A25650099F07E /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		4256EA531E7A25650099F07E /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -84,6 +87,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3BC69A5F20A2EBEE009555FE /* DKProgress */ = {
+			isa = PBXGroup;
+			children = (
+				3BC69A6020A2EC0A009555FE /* UIWebView+DKProgress.h */,
+				3BC69A6120A2EC0A009555FE /* UIWebView+DKProgress.m */,
+				4256EA861E7A2A4C0099F07E /* DKProgressLayer.h */,
+				4256EA871E7A2A4C0099F07E /* DKProgressLayer.m */,
+			);
+			name = DKProgress;
+			sourceTree = "<group>";
+		};
 		4256EA441E7A25650099F07E = {
 			isa = PBXGroup;
 			children = (
@@ -107,7 +121,7 @@
 		4256EA4F1E7A25650099F07E /* WebViewProgress */ = {
 			isa = PBXGroup;
 			children = (
-				4256EA891E7A89C90099F07E /* DKProgress */,
+				3BC69A5F20A2EBEE009555FE /* DKProgress */,
 				4256EA531E7A25650099F07E /* AppDelegate.h */,
 				4256EA541E7A25650099F07E /* AppDelegate.m */,
 				4256EA561E7A25650099F07E /* ViewController.h */,
@@ -147,15 +161,6 @@
 				4256EA771E7A25650099F07E /* Info.plist */,
 			);
 			path = WebViewProgressUITests;
-			sourceTree = "<group>";
-		};
-		4256EA891E7A89C90099F07E /* DKProgress */ = {
-			isa = PBXGroup;
-			children = (
-				4256EA861E7A2A4C0099F07E /* DKProgressLayer.h */,
-				4256EA871E7A2A4C0099F07E /* DKProgressLayer.m */,
-			);
-			name = DKProgress;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -294,6 +299,7 @@
 			files = (
 				4256EA581E7A25650099F07E /* ViewController.m in Sources */,
 				4256EA551E7A25650099F07E /* AppDelegate.m in Sources */,
+				3BC69A6220A2EC0A009555FE /* UIWebView+DKProgress.m in Sources */,
 				4256EA881E7A2A4C0099F07E /* DKProgressLayer.m in Sources */,
 				4256EA521E7A25650099F07E /* main.m in Sources */,
 				4256EA851E7A26F70099F07E /* WebViewController.m in Sources */,
