@@ -24,8 +24,6 @@ static inline void dk_swizzleSelector(Class clazz, SEL originalSelector, SEL swi
 @interface UIWebView ()
 
 @property (nonatomic, strong) id dk_delegate;
-/** webView原始的delegate */
-@property (nonatomic, weak) id<UIWebViewDelegate> dk_targetProxy;
 
 @end
 
@@ -35,7 +33,8 @@ static inline void dk_swizzleSelector(Class clazz, SEL originalSelector, SEL swi
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         Class class = [self class];
-        dk_swizzleSelector(class, @selector(willMoveToSuperview:), @selector(dk_willMoveToSuperview:));
+        dk_swizzleSelector(class, @selector(initWithFrame:), @selector(dk_initWithFrame:));
+        dk_swizzleSelector(class, @selector(initWithCoder:), @selector(dk_initWithCoder:));
         dk_swizzleSelector(class, @selector(setDelegate:), @selector(dk_setDelegate:));
         dk_swizzleSelector(class, NSSelectorFromString(@"dealloc"), @selector(dk_dealloc));
     });
@@ -61,12 +60,12 @@ static inline void dk_swizzleSelector(Class clazz, SEL originalSelector, SEL swi
     objc_setAssociatedObject(self, @selector(dk_delegate), dk_delegate, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-- (id<UIWebViewDelegate>)targetProxy {
+- (id<UIWebViewDelegate>)dk_targetProxy {
     return objc_getAssociatedObject(self, _cmd);
 }
 
-- (void)setTargetProxy:(id<UIWebViewDelegate>)targetProxy {
-    objc_setAssociatedObject(self, @selector(targetProxy), targetProxy, OBJC_ASSOCIATION_ASSIGN);
+- (void)setDk_targetProxy:(id<UIWebViewDelegate>)dk_targetProxy {
+    objc_setAssociatedObject(self, @selector(dk_targetProxy), dk_targetProxy, OBJC_ASSOCIATION_ASSIGN);
 }
 
 - (BOOL)dk_showProgressLayer {
@@ -75,21 +74,34 @@ static inline void dk_swizzleSelector(Class clazz, SEL originalSelector, SEL swi
 
 - (void)setDk_showProgressLayer:(BOOL)dk_showProgressLayer {
     objc_setAssociatedObject(self, @selector(dk_showProgressLayer), @(dk_showProgressLayer), OBJC_ASSOCIATION_ASSIGN);
+    if (dk_showProgressLayer) {
+        [self setDelegate:self.dk_targetProxy];
+    }
 }
 
 #pragma mark - method swizzling
 
-- (void)dk_willMoveToSuperview:(UIView *)newSuperview {
-    [self dk_willMoveToSuperview:newSuperview];
+- (instancetype)dk_initWithFrame:(CGRect)frame {
+    UIWebView *webView = [self dk_initWithFrame:frame];
+    /** 默认显示加载进度条 */
+    webView.dk_showProgressLayer = YES;
+    return webView;
+}
+
+- (instancetype)dk_initWithCoder:(NSCoder *)aDecoder {
+    UIWebView *webView = [self dk_initWithCoder:aDecoder];
+    /** 默认显示加载进度条 */
+    webView.dk_showProgressLayer = YES;
+    return webView;
 }
 
 - (void)dk_setDelegate:(id <UIWebViewDelegate>)delegate {
+    self.dk_targetProxy = delegate;
     if (!self.dk_showProgressLayer) {
         [self dk_setDelegate:delegate];
         return;
     }
     /** 动态创建progressDelegate */
-    self.targetProxy = delegate;
     Class clazz = [self dk_allocPorgressDelegate];
 
     if (!clazz) {
@@ -107,6 +119,7 @@ static inline void dk_swizzleSelector(Class clazz, SEL originalSelector, SEL swi
         [self.dk_progressLayer setHidden:YES];
         [self.dk_progressLayer removeFromSuperlayer];
     }
+    self.dk_delegate = nil;
     [self dk_dealloc];
 }
 
@@ -136,33 +149,29 @@ static inline void dk_swizzleSelector(Class clazz, SEL originalSelector, SEL swi
 #pragma mark - method custom implementation
 
 static void dk_webViewDidStartLoad (id self, SEL _cmd, UIWebView *webView) {
-    NSLog(@"dk_webViewDidStartLoad");
     [webView.dk_progressLayer progressAnimationStart];
-    if (webView.targetProxy && [webView.targetProxy respondsToSelector:_cmd]) {
-        [webView.targetProxy webViewDidStartLoad:webView];
+    if (webView.dk_targetProxy && [webView.dk_targetProxy respondsToSelector:_cmd]) {
+        [webView.dk_targetProxy webViewDidStartLoad:webView];
     }
 }
 
 static inline void dk_webViewDidFinishLoad (id self, SEL _cmd, UIWebView *webView) {
-    NSLog(@"dk_webViewDidFinishLoad");
     [webView.dk_progressLayer progressAnimationCompletion];
-    if (webView.targetProxy && [webView.targetProxy respondsToSelector:_cmd]) {
-        [webView.targetProxy webViewDidFinishLoad:webView];
+    if (webView.dk_targetProxy && [webView.dk_targetProxy respondsToSelector:_cmd]) {
+        [webView.dk_targetProxy webViewDidFinishLoad:webView];
     }
 }
 
 static inline void dk_webViewDidFailLoadWithError (id self, SEL _cmd, UIWebView *webView, NSError *error) {
-    NSLog(@"dk_webViewDidFailLoadWithError");
     [webView.dk_progressLayer progressAnimationCompletion];
-    if (webView.targetProxy && [webView.targetProxy respondsToSelector:_cmd]) {
-        [webView.targetProxy webView:webView didFailLoadWithError:error];
+    if (webView.dk_targetProxy && [webView.dk_targetProxy respondsToSelector:_cmd]) {
+        [webView.dk_targetProxy webView:webView didFailLoadWithError:error];
     }
 }
 
 static inline BOOL dk_webViewShouldStartLoadWithRequestNavigationType (id self, SEL _cmd, UIWebView *webView, NSURLRequest *request, UIWebViewNavigationType navigationType) {
-    NSLog(@"dk_webViewShouldStartLoadWithRequestNavigationType");
-    if (webView.targetProxy && [webView.targetProxy respondsToSelector:_cmd]) {
-        return [webView.targetProxy webView:webView shouldStartLoadWithRequest:request navigationType:navigationType];
+    if (webView.dk_targetProxy && [webView.dk_targetProxy respondsToSelector:_cmd]) {
+        return [webView.dk_targetProxy webView:webView shouldStartLoadWithRequest:request navigationType:navigationType];
     }
     return YES;
 }

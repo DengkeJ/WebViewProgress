@@ -13,7 +13,7 @@
 @interface UIWebView (Progress)
 
 @property (nonatomic, strong) DKProgressLayer *dk_progressLayer;
-/** 是否显示加载进度条 */
+/** 是否显示加载进度条, 默认YES */
 @property (nonatomic, assign) BOOL dk_showProgressLayer;
 
 - (void)dk_showCustomProgressView;
